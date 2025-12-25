@@ -87,6 +87,7 @@ main {
     padding: 5px 10px;
     border-radius: 5px;
     border: 2px solid #3a444d;
+    box-shadow: -3px 4px 0 #888, -5px 7px 0 #333;
 }
 
 .lives-counter span {
