@@ -31,7 +31,7 @@ main {
     left: 30%;
     transform: translateX(-63%, 20%);
     height: 18%;
-    transition: filter 0.5s ease-in-out; 
+    /* transition: filter 0.5s ease-in-out;  */
 }   
 
 /* filtro para a silhueta */
