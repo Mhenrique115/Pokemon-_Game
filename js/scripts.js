@@ -24,7 +24,7 @@ const resetGame = () => {
     currentPokemonId = 1;
     updateLivesDisplay();
     renderPokemon(currentPokemonId);
-    alert('Você perdeu todas as suas vidas! O jogo será reiniciado.');
+    alert('You lost all your lives! The game will restart.');
 };
 
 // Função para buscar o Pokémon na API
@@ -39,7 +39,7 @@ const fetchPokemon = async (pokemon) => {
 
 // Função para renderizar o Pokémon
 const renderPokemon = async (pokemon) => {
-    pokemonName.innerHTML = 'Carregando...';
+    pokemonName.innerHTML = 'Loading...';
     pokemonNumber.innerHTML = '';
     pokemonImage.classList.add('silhouette'); // Garante que a silhueta está ativa
 
@@ -93,13 +93,13 @@ form.addEventListener('submit', (event) => {
 
     if (guess === currentPokemonName) {
         // Acertou
-        pokemonName.innerHTML = 'Correto! ' + currentPokemonName;
+        pokemonName.innerHTML = 'Correct! ' + currentPokemonName;
         revealPokemon(true);
     } else {
         // Errou
         lives -= 1;
         updateLivesDisplay();
-        pokemonName.innerHTML = 'Errado! ' + lives + ' vidas restantes.';
+        pokemonName.innerHTML = 'Wrong! ' + lives + ' remaining lives.';
 
         if (lives <= 0) {
             // Se perdeu, revela o Pokémon e reseta
