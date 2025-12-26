@@ -9,8 +9,8 @@ const muteButton = document.getElementById('mute-button');
 
 // Variáveis do Jogo
 let currentPokemonId = 1;
-let lives = 5;
-const MAX_LIVES = 5;
+let lives = 10;
+const MAX_LIVES = 10;
 let currentPokemonName = '';
 
 // Função para atualizar o contador de vidas no HTML
