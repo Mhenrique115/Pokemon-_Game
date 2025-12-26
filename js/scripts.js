@@ -8,7 +8,7 @@ const gameMusic = document.getElementById('game-music');
 const muteButton = document.getElementById('mute-button');
 
 // Variáveis do Jogo
-// let currentPokemonId = 1;
+let currentPokemonId = 1;
 let lives = 10;
 const MAX_LIVES = 10;
 let currentPokemonName = '';
