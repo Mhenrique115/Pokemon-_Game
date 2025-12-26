@@ -8,10 +8,20 @@ const gameMusic = document.getElementById('game-music');
 const muteButton = document.getElementById('mute-button');
 
 // Variáveis do Jogo
-let currentPokemonId = 1;
+// let currentPokemonId = 1;
 let lives = 10;
 const MAX_LIVES = 10;
 let currentPokemonName = '';
+// foram criadas a functions a baixo e a variavel total pokemon para que os pokemons sejam aleatórios
+const TOTAL_POKEMON = 649;
+
+const getRandomPokemonId = () => {
+    let randomId;
+    do {
+        randomId = Math.floor(Math.random() * TOTAL_POKEMON) + 1;
+    } while (randomId === currentPokemonId);
+    return randomId;
+};
 
 // Função para atualizar o contador de vidas no HTML
 const updateLivesDisplay = () => {
@@ -19,13 +29,22 @@ const updateLivesDisplay = () => {
 };
 
 // Função para resetar o jogo
+
 const resetGame = () => {
     lives = MAX_LIVES;
-    currentPokemonId = 1;
     updateLivesDisplay();
-    renderPokemon(currentPokemonId);
+    renderPokemon(getRandomPokemonId());
     alert('You lost all your lives! The game will restart.');
 };
+
+// antiga 
+// const resetGame = () => {
+//     lives = MAX_LIVES;
+//     currentPokemonId = 1;
+//     updateLivesDisplay();
+//     renderPokemon(currentPokemonId);
+//     alert('You lost all your lives! The game will restart.');
+// };
 
 // Função para buscar o Pokémon na API
 const fetchPokemon = async (pokemon) => {
@@ -41,6 +60,7 @@ const fetchPokemon = async (pokemon) => {
 const renderPokemon = async (pokemon) => {
     pokemonName.innerHTML = 'Loading...';
     pokemonNumber.innerHTML = '';
+    pokemonImage.style.display = 'none';
     pokemonImage.classList.add('silhouette'); // Garante que a silhueta está ativa
 
     const data = await fetchPokemon(pokemon);
@@ -75,9 +95,14 @@ const revealPokemon = (isCorrect) => {
         
         // Se acertou, espera um pouco e vai para o próximo
         setTimeout(() => {
-            currentPokemonId += 1;
-            renderPokemon(currentPokemonId);
+            renderPokemon(getRandomPokemonId());
         }, 1500);
+        
+        // antiga
+        // setTimeout(() => {
+        //     currentPokemonId += 1;
+        //     renderPokemon(currentPokemonId);
+        // }, 1500);
     } else {
         // Se errou e perdeu o jogo, revela antes de resetar
         pokemonImage.classList.remove('silhouette'); // Remove a silhueta
@@ -127,7 +152,8 @@ document.addEventListener('click', initAudio);
 
 // Inicialização do Jogo
 updateLivesDisplay();
-renderPokemon(currentPokemonId);
+// renderPokemon(currentPokemonId);
+renderPokemon(getRandomPokemonId());
 
 
 muteButton.addEventListener('click', () => {
