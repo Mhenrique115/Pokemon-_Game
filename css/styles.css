@@ -48,6 +48,53 @@ main {
     right: 27%;
     font-size: clamp(8px,5vw,16px);
 }
+.top-controls {
+    position: absolute;
+    top: 10%;
+    left: 70%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.05rem;
+    z-index: 10;
+}
+.toggle-silhouette {
+    margin-top: -0.1rem;
+    border: none;
+    border-radius: 50%;
+    width: 2.4rem;
+    height: 2.4rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: #3a444d;
+    cursor: pointer;
+    box-shadow: none;
+    transition: none;
+    font-size: 1.4rem;
+    padding: 0;
+}.toggle-silhouette.eye-crossed {
+    text-decoration: line-through;
+    text-decoration-thickness: 0.2rem;
+    text-decoration-color: #3a444d;
+}.toggle-silhouette:active {
+    transform: none;
+}
+.pokemon_hint {
+    position: absolute;
+    top: 63%;
+    right: 30%;
+    width: 40%;
+    color: #3a444d;
+    font-size: clamp(8px,3vw,0.95rem);
+    text-transform: capitalize;
+}
+.pokemon_number {
+    display: none;
+}
+
 .pokemon_name {
     color: #3a444d;
     text-transform: capitalize;
@@ -75,19 +122,13 @@ main {
 
 /* Contador de vidas */
 .lives-counter {
-    position: absolute;
-    top: 10%;
-    left: 70%;
-    transform: translateX(-50%);
     font-size: 1.1rem;
     font-weight: 700;
-    color: #d9534f; 
-    z-index: 10;
+    color: #d9534f;
     background-color: rgba(255, 255, 255, 0.8);
     padding: 5px 10px;
     border-radius: 5px;
     border: 2px solid #3a444d;
-    box-shadow: -3px 4px 0 #888, -5px 7px 0 #333;
 }
 
 .lives-counter span {
