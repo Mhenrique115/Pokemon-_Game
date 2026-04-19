@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt_br">
+<html lang="pt-BR">
 <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,23 +12,26 @@
 </head>
 <body>
     <main>
-        <div class="lives-counter">Lives: <span>10</span></div>
-        <img  class="pokemon silhouette" src="" alt="pokemon">
+        <div class="top-controls">
+            <div class="lives-counter">Vidas: <span>10</span></div>
+            <button id="toggle-silhouette" class="toggle-silhouette" type="button" aria-label="Revelar silhueta">👁️</button>
+        </div>
+        <img class="pokemon silhouette" src="" alt="Silhueta do Pokémon">
         <h1 class="pokemon_data">
-            <span class="pokemon_number"></span> -
+            <span class="pokemon_number"></span>
             <span class="pokemon_name"></span>
         </h1>
         <form class="form">
             <input 
             type="search"
             class="input_search"
-            placeholder="Who's that Pokémon?"
+            placeholder="Qual é este Pokémon?"
             required
             />
         </form>
         <img class="pokedex" src="./images/pokedex.png" alt="Pokedex">
     </main>
+    <audio id="game-music" src="./music/Onward to Adventure! - Pokémon Black & Pokémon White.mp3" loop autoplay></audio>
+    <button id="mute-button" class="button">🔊</button>
 </body>
-<audio id="game-music" src="./music/Onward to Adventure! - Pokémon Black & Pokémon White.mp3" loop ></audio>
-<button id="mute-button" class="button">🔊</button>
 </html>
