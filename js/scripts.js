@@ -6,13 +6,15 @@ const input = document.querySelector('.input_search');
 const livesCounter = document.querySelector('.lives-counter span');
 const gameMusic = document.getElementById('game-music');
 const muteButton = document.getElementById('mute-button');
+const toggleButton = document.getElementById('toggle-silhouette');
 
 // Variáveis do Jogo
 let currentPokemonId = 1;
 let lives = 10;
 const MAX_LIVES = 10;
 let currentPokemonName = '';
-// foram criadas a functions a baixo e a variavel total pokemon para que os pokemons sejam aleatórios
+let hintLength = 0;
+
 const TOTAL_POKEMON = 649;
 
 const getRandomPokemonId = () => {
@@ -23,69 +25,89 @@ const getRandomPokemonId = () => {
     return randomId;
 };
 
+const setToggleButtonState = (isSilhouette) => {
+    toggleButton.textContent = '👁️';
+    toggleButton.classList.toggle('eye-crossed', !isSilhouette);
+    toggleButton.setAttribute('aria-label', isSilhouette ? 'Revelar silhueta' : 'Silhueta revelada');
+};
+
+const updateHint = () => {
+    if (!currentPokemonName) {
+        pokemonName.innerHTML = '???';
+        return;
+    }
+
+    const letters = Math.min(hintLength, currentPokemonName.length);
+    pokemonName.innerHTML = letters > 0
+        ? `${currentPokemonName.slice(0, letters)}${letters < currentPokemonName.length ? '...' : ''}`
+        : '???';
+};
+
+const resetHint = () => {
+    hintLength = 0;
+    updateHint();
+};
+
 // Função para atualizar o contador de vidas no HTML
 const updateLivesDisplay = () => {
     livesCounter.innerHTML = lives;
 };
 
 // Função para resetar o jogo
-
-const resetGame = () => {
-    lives = MAX_LIVES;
-    updateLivesDisplay();
-    renderPokemon(getRandomPokemonId());
-    alert('You lost all your lives! The game will restart.');
-};
-
-// antiga 
 // const resetGame = () => {
 //     lives = MAX_LIVES;
 //     currentPokemonId = 1;
 //     updateLivesDisplay();
 //     renderPokemon(currentPokemonId);
-//     alert('You lost all your lives! The game will restart.');
+//     alert('Você perdeu todas as suas vidas! O jogo será reiniciado.');
 // };
+
+const resetGame = () => {
+    lives = MAX_LIVES;
+    updateLivesDisplay();
+    renderPokemon(getRandomPokemonId());
+    alert('Você perdeu todas as vidas! O jogo será reiniciado.');
+};
+
 
 // Função para buscar o Pokémon na API
 const fetchPokemon = async (pokemon) => {
-    const APIResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
-    if(APIResponse.status === 200) {
-        const data = await APIResponse.json();
-        return data;
+    try {
+        const APIResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon}`);
+        if (APIResponse.ok) {
+            return await APIResponse.json();
+        }
+    } catch (error) {
+        console.error('Erro ao buscar Pokémon:', error);
     }
     return null;
-}
+};
 
 // Função para renderizar o Pokémon
 const renderPokemon = async (pokemon) => {
-    pokemonName.innerHTML = 'Loading...';
+    pokemonName.innerHTML = 'Carregando...';
     pokemonNumber.innerHTML = '';
     pokemonImage.style.display = 'none';
-    pokemonImage.classList.add('silhouette'); // Garante que a silhueta está ativa
+    pokemonImage.classList.add('silhouette'); // silhueta ativa
+    setToggleButtonState(true);
+    resetHint();
 
     const data = await fetchPokemon(pokemon);
 
-    if(data){
-        pokemonImage.style.display = 'block';
-        pokemonName.innerHTML = '???'; // Esconde o nome
+    if (data) {
+        const sprite = data.sprites?.versions?.['generation-v']?.['black-white']?.animated?.front_default || data.sprites.front_default || '';
+        pokemonImage.style.display = sprite ? 'block' : 'none';
         pokemonNumber.innerHTML = data.id;
-        pokemonImage.src = data['sprites']['versions']['generation-v']['black-white']['animated']['front_default'];
+        pokemonImage.src = sprite;
         input.value = '';
         currentPokemonId = data.id;
         currentPokemonName = data.name.toLowerCase(); // Armazena o nome correto em minúsculas
-    } 
-    // não é mais necessário tentar o próximo
-    // else { 
-    //     // Se não encontrar, tenta o próximo 
-    //     // pokemonName.innerHTML = 'Não encontrado :(';
-    //     // pokemonNumber.innerHTML = '';
-    //     // pokemonImage.style.display = 'none';
-    //     // Se o ID for muito alto, volta para o 1
-    //     if (currentPokemonId > 1) {
-    //         currentPokemonId = 1;
-    //         renderPokemon(currentPokemonId);
-    //     }
-}
+        resetHint();
+    } else {
+        pokemonName.innerHTML = 'Erro ao carregar. Atualize a página.';
+        currentPokemonName = '';
+    }
+};
 
 // Função para revelar o Pokémon
 const revealPokemon = (isCorrect) => {
@@ -94,15 +116,13 @@ const revealPokemon = (isCorrect) => {
         pokemonName.innerHTML = currentPokemonName; // Mostra o nome
         
         // Se acertou, espera um pouco e vai para o próximo
-        setTimeout(() => {
-            renderPokemon(getRandomPokemonId());
-        }, 1500);
-        
-        // antiga
         // setTimeout(() => {
         //     currentPokemonId += 1;
         //     renderPokemon(currentPokemonId);
         // }, 1500);
+        setTimeout(() => {
+            renderPokemon(getRandomPokemonId());
+        }, 1500);
     } else {
         // Se errou e perdeu o jogo, revela antes de resetar
         pokemonImage.classList.remove('silhouette'); // Remove a silhueta
@@ -110,7 +130,7 @@ const revealPokemon = (isCorrect) => {
     }
 }
 
-// Evento de submissão do formulário (tentativa de adivinhação)
+
 form.addEventListener('submit', (event) => {
     event.preventDefault();
     const guess = input.value.toLowerCase().trim();
@@ -118,23 +138,19 @@ form.addEventListener('submit', (event) => {
 
     if (guess === currentPokemonName) {
         // Acertou
-        pokemonName.innerHTML = 'Correct! ' + currentPokemonName;
         revealPokemon(true);
+        resetHint();
     } else {
         // Errou
         lives -= 1;
         updateLivesDisplay();
-        pokemonName.innerHTML = 'Wrong! ' + lives + ' remaining lives.';
+        hintLength = Math.min(currentPokemonName.length, hintLength + 1);
+        updateHint();
 
         if (lives <= 0) {
             // Se perdeu, revela o Pokémon e reseta
-            revealPokemon(false); 
+            revealPokemon(false);
             setTimeout(resetGame, 2000);
-        } else {
-            // Se errou, mas ainda tem vidas, volta a mensagem para '???'
-            setTimeout(() => {
-                pokemonName.innerHTML = '???';
-            }, 1500);
         }
     }
 });
@@ -144,7 +160,7 @@ const initAudio = () => {
     gameMusic.play().catch(error => {
         console.log("Autoplay bloqueado. O áudio será iniciado no primeiro clique.");
     });
-    document.removeEventListener('click', initAudio); 
+    document.removeEventListener('click', initAudio);
 };
 
 document.addEventListener('click', initAudio);
@@ -155,7 +171,6 @@ updateLivesDisplay();
 // renderPokemon(currentPokemonId);
 renderPokemon(getRandomPokemonId());
 
-
 muteButton.addEventListener('click', () => {
     if (gameMusic.muted) {
         gameMusic.muted = false;
@@ -164,4 +179,9 @@ muteButton.addEventListener('click', () => {
         gameMusic.muted = true;
         muteButton.innerHTML = '🔇'; // som desligado
     }
+});
+
+toggleButton.addEventListener('click', () => {
+    const isSilhouette = pokemonImage.classList.toggle('silhouette');
+    setToggleButtonState(isSilhouette);
 });
